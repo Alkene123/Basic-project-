@@ -3,7 +3,7 @@ import Todo from '../model/todoModel.js';
 // Get all todos
 export const allTodos = async (req, res) => {
     try {
-        const todos = await Todo.find();
+        const todos = await Todo.find({user: req.user._id}).sort({ createdAt: -1 });
         res.status(200).json({
             success: true,
             todos
@@ -23,7 +23,8 @@ export const createTodo = async (req, res) => {
         const { title, description } = req.body;
         const newTodo = await Todo.create({ 
             title: title || description,
-            text: description || ''
+            text: description || '',
+            user: req.user._id
         });
         res.status(201).json({
             success: true,
@@ -42,7 +43,7 @@ export const createTodo = async (req, res) => {
 export const singleTodo = async (req, res) => {
     try {
         const id = req.params.id;
-        const todo = await Todo.findById(id);
+        const todo = await Todo.findOne({ _id: id, user: req.user._id })
         if (!todo) {
             return res.status(404).json({ 
                 success: false, 
@@ -66,7 +67,7 @@ export const singleTodo = async (req, res) => {
 export const deleteTodo = async (req, res) => {
     try {
         const id = req.params.id;
-        const deletedTodo = await Todo.findByIdAndDelete(id);
+        const deletedTodo = await Todo.findOneAndDelete({ _id: id, user: req.user._id })
         if (!deletedTodo) {
             return res.status(404).json({ 
                 success: false, 
@@ -90,7 +91,7 @@ export const deleteTodo = async (req, res) => {
 export const toggleTodo = async (req, res) => {
     try {
         const id = req.params.id;
-        const todo = await Todo.findById(id);
+        const todo = await Todo.findById({_id: id, user: req.user._id});
         
         if (!todo) {
             return res.status(404).json({ 

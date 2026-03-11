@@ -12,8 +12,6 @@
          //secure:process.env.NODE_ENV === 'production',
          sameSite:"lax",
      }
-     console.log('is object a data function',option.maxAge);
-     console.log('');
      
      
      res.status(statusCode).cookie('token', token, option ).json

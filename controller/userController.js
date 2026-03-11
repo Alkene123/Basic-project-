@@ -2,6 +2,14 @@ import User from '../model/userModel.js'
 import {sendToken} from '../helper/jwttoken.js'
 import bcrypt from 'bcrypt';
 import HandleError from '../helper/errHandling.js';
+import jwt from 'jsonwebtoken';
+
+const generateToken = (id) => {
+    return jwt.sign({ id }, process.env.JWT_SECRET || 'your-secret-key', {
+        expiresIn: '30d'
+    });
+};
+
 export const registerUser = async(req, res, next)=>{
  try{
    const {name,email,password}=req.body;
@@ -32,8 +40,20 @@ export const registerUser = async(req, res, next)=>{
         },
         
     });
+    // if (user) {
+    //         res.status(201).json({
+    //             success: true,
+    //             message: 'Registration successful',
+    //             token: generateToken(user._id),
+    //             user: {
+    //                 id: user._id,
+    //                 name: user.name,
+    //                 email: user.email
+    //             }
+    //         });
+    //     }
     
-    sendToken(user, 201, res)
+    return sendToken(user, 201, res)
       
 
 }catch(error){
@@ -48,7 +68,7 @@ export const loginUser= async (req, res, next)=>{
         const {email, password}=req.body;
     
     if(!email || !password){
-        res.status(400).json({
+        return res.status(400).json({
             success:false,
             message:"Please provide email and password"
         })
@@ -65,8 +85,17 @@ export const loginUser= async (req, res, next)=>{
      if(!isMatch){
          return next(new HandleError("Email or password does not exist", 401))
      }
-               
-    sendToken(user,200,res)
+        //  return res.status(200).json({
+        //     success: true,
+        //     message: 'Login successful',
+        //     token: generateToken(user._id),
+        //     user: {
+        //         id: user._id,
+        //         name: user.name,
+        //         email: user.email
+        //     }
+        // });
+    return sendToken(user,200,res)
     
     }catch(error){
         console.log(error.message);
@@ -79,7 +108,7 @@ export const logoutUser= async (req, res, next)=>{
         expires: new Date(Date.now()),
     };
     res.cookie('token',null,option)
-    res.status(200).json({
+    return  res.status(200).json({
         success:true,
         message:"user just logged out"
     })
@@ -97,7 +126,7 @@ export const forgotPassword = async (req, res, next) => {
         }
         // For now, just return a success message
         // In production, you would implement token generation and email sending
-        res.status(200).json({
+        return res.status(200).json({
             success: true,
             message: "Password reset link sent to your email"
         });
