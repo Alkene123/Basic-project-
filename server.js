@@ -14,19 +14,26 @@ const PORT = process.env.PORT || 3000;
 
 connectDB();
 
-// Serve static files from the frontend folder
-app.use(express.static(path.join(__dirname, '../fronted')));
+// app.use(express.static(path.join(__dirname, '../fronted')));
 
-// Serve index.html for the root route
+// app.get('/', (req, res) => {
+//     res.sendFile(path.join(__dirname, '../fronted/login.html'));
+// });
+
+// app.get('*', (req, res) => {
+//     res.sendFile(path.join(__dirname, '../fronted/login.html'));
+// });
 app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, '../fronted/login.html'));
+    res.json({ 
+        status: "Backend is running!",
+        message: "API is live. Frontend files not yet deployed.",
+        endpoints: {
+            "GET /api/notes": "Get all notes",
+            "POST /api/notes": "Create a note",
+            // Add your other endpoints here
+        }
+    });
 });
-
-// The "catch-all" route that serves login.html for any unmatched route
-app.get('*', (req, res) => {
-    res.sendFile(path.join(__dirname, '../fronted/login.html'));
-});
-
 const server = app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
 });
