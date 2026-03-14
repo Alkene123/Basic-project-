@@ -14,15 +14,15 @@ const PORT = process.env.PORT || 3000;
 
 connectDB();
 
-// app.use(express.static(path.join(__dirname, '../fronted')));
+app.use(express.static(path.join(__dirname, '../fronted')));
 
-// app.get('/', (req, res) => {
-//     res.sendFile(path.join(__dirname, '../fronted/login.html'));
-// });
+app.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname, '../fronted/login.html'));
+});
 
-// app.get('*', (req, res) => {
-//     res.sendFile(path.join(__dirname, '../fronted/login.html'));
-// });
+app.get('*', (req, res) => {
+    res.sendFile(path.join(__dirname, '../fronted/login.html'));
+});
 app.get('/', (req, res) => {
     res.json({ 
         status: "Backend is running!",
